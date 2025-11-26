@@ -14,13 +14,13 @@ Quick start:
 
 Dry-run event generation (no Kafka):
 
-    python chapter10/dry_run_event_models.py
+    python -m chapter10.dry_run_event_models
 
 Produce events to a local Kafka running on localhost:9092:
 
     export RUN_MODE=kafka
-    python chapter11/produce_orders_local_kafka.py
+    python -m chapter11.produce_orders_local_kafka
 
 Consume events from the incoming-orders topic:
 
-    python chapter11/consume_orders_local_kafka.py
+    python -m chapter11.consume_orders_local_kafka

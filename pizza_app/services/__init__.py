@@ -1,3 +1,3 @@
 """
-Service-style modules that act like microservices.
+Service-style modules acting like microservices.
 """

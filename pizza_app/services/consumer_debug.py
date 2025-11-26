@@ -19,9 +19,9 @@ def run_consumer() -> None:
         group_id=os.getenv("PIZZA_CONSUMER_GROUP", "pizza-debug-consumer"),
     )
 
-    print(f"[consumer] Listening on topic '{topic}'...")
-    for message in consumer:
-        print(f"[consumer] {message.value}")
+    print(f"[consumer] listening on {topic}")
+    for msg in consumer:
+        print(msg.value)
 
 
 if __name__ == "__main__":

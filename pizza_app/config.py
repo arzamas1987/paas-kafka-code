@@ -21,27 +21,27 @@ class KafkaSettings:
 
 
 def _load_env(name: str, default: str | None = None) -> str | None:
-    value = os.getenv(name)
-    if value is None:
+    val = os.getenv(name)
+    if val is None:
         return default
-    return value
+    return val
 
 
 def get_kafka_settings() -> KafkaSettings:
     profile = _load_env("KAFKA_PROFILE", "local") or "local"
 
     if profile == "local":
-        bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092") or "localhost:9092"
+        bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
         return KafkaSettings(profile=profile, bootstrap_servers=bootstrap)
 
     if profile == "docker":
-        bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092") or "kafka:9092"
+        bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
         return KafkaSettings(profile=profile, bootstrap_servers=bootstrap)
 
     if profile == "cloud":
         bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "")
         if not bootstrap:
-            raise RuntimeError("KAFKA_BOOTSTRAP_SERVERS must be set for cloud profile")
+            raise RuntimeError("Missing KAFKA_BOOTSTRAP_SERVERS for cloud mode")
 
         return KafkaSettings(
             profile=profile,
@@ -52,8 +52,8 @@ def get_kafka_settings() -> KafkaSettings:
             sasl_password=_load_env("KAFKA_SASL_PASSWORD"),
         )
 
-    bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092") or "localhost:9092"
-    return KafkaSettings(profile=profile, bootstrap_servers=bootstrap)
+    # fallback
+    return KafkaSettings(profile=profile, bootstrap_servers="localhost:9092")
 
 
 kafka_settings = get_kafka_settings()

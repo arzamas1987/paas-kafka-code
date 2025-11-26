@@ -19,7 +19,7 @@ class Address(BaseModel):
 
 class BaseEvent(BaseModel):
     order_id: str
-    event_type: str = Field(..., description="Event type name, e.g. 'OrderReceived'")
+    event_type: str = Field(..., description="Event type name")
     order_type: Literal["delivery", "onsite", "eat-in"]
     timestamp: datetime
     correlation_id: str

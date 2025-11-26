@@ -17,9 +17,9 @@ COUNTER_FILE = Path(os.getenv("PIZZA_ORDER_COUNTER_FILE", "var/order_counter.jso
 
 
 def _build_items(rng: random.Random) -> List[Item]:
-    num_pizzas = rng.randint(1, 3)
+    num = rng.randint(1, 3)
     items: List[Item] = []
-    for _ in range(num_pizzas):
+    for _ in range(num):
         sku = rng.choice(menu.PIZZAS).sku
         qty = rng.randint(1, 2)
         items.append(Item(sku=sku, qty=qty))
@@ -60,7 +60,7 @@ def create_random_order(rng: random.Random | None = None) -> OrderReceived:
     return OrderReceived(
         order_id=order_id,
         event_type="OrderReceived",
-        order_type=order_type,  # type: ignore[arg-type]
+        order_type=order_type,
         items=items,
         address=address,
         table_number=table_number,

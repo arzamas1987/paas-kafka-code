@@ -29,7 +29,3 @@ DRINKS: List[MenuItem] = [
     MenuItem("drink-sparkling-water", "Sparkling Water"),
     MenuItem("drink-lemonade", "Lemonade"),
 ]
-
-
-def find_pizza_sku(position: int) -> str:
-    return PIZZAS[position % len(PIZZAS)].sku

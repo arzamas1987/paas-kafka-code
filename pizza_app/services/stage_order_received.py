@@ -11,7 +11,7 @@ from pizza_app.config import kafka_settings
 from pizza_app.generator.order_factory import create_random_order
 
 
-def _iter_orders(rng: random.Random, max_orders: int | None = None) -> Iterable[str]:
+def _iter_orders(rng: random.Random, max_orders: int | None) -> Iterable[str]:
     count = 0
     while True:
         event = create_random_order(rng)
@@ -23,19 +23,14 @@ def _iter_orders(rng: random.Random, max_orders: int | None = None) -> Iterable[
 
 def run_simulation(max_orders: int = 10) -> None:
     seed = os.getenv("PIZZA_RANDOM_SEED")
-    rng = random.Random()
-    if seed is not None:
-        rng.seed(int(seed))
-
-    for raw in _iter_orders(rng, max_orders=max_orders):
+    rng = random.Random(seed if seed else None)
+    for raw in _iter_orders(rng, max_orders):
         print(raw)
 
 
 def run_kafka(max_orders: int = 10, delay_seconds: float = 1.0) -> None:
     seed = os.getenv("PIZZA_RANDOM_SEED")
-    rng = random.Random()
-    if seed is not None:
-        rng.seed(int(seed))
+    rng = random.Random(seed if seed else None)
 
     producer = KafkaProducer(
         bootstrap_servers=kafka_settings.bootstrap_servers,
@@ -44,9 +39,9 @@ def run_kafka(max_orders: int = 10, delay_seconds: float = 1.0) -> None:
 
     topic = kafka_settings.incoming_orders_topic
 
-    for raw in _iter_orders(rng, max_orders=max_orders):
+    for raw in _iter_orders(rng, max_orders):
         producer.send(topic, raw)
-        print(f"[producer] sent to {topic}: {raw}")
+        print(f"[producer] sent: {raw}")
         time.sleep(delay_seconds)
 
     producer.flush()
