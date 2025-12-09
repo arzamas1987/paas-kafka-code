@@ -1,4 +1,4 @@
-# chapter12/action04_partition_key_experiment.py
+# chapter12/action05_partition_key_experiment.py
 
 from __future__ import annotations
 
@@ -65,10 +65,10 @@ def experiment(order_ids: Iterable[str], repeats: int = 3) -> None:
 
 def main() -> None:
     """
-    Action 12.3 – Show how keys map to partitions.
+    Action – Show how keys map to partitions.
 
     Usage:
-        python -m chapter12.action04_partition_key_experiment
+        python -m chapter12.action05_partition_key_experiment
     """
     # Use short IDs here so they are easy to spot in CLI consumer output.
     experiment(order_ids=["A0001", "A0002", "A0003"], repeats=3)

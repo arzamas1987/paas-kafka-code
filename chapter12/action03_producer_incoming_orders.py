@@ -1,4 +1,4 @@
-# chapter12/action02_producer_incoming_orders.py
+# chapter12/action03_producer_incoming_orders.py
 
 from __future__ import annotations
 
@@ -71,10 +71,10 @@ def _handle_sigint(signum, frame) -> None:  # type: ignore[override]
 
 def main() -> None:
     """
-    Action 12.2 – Python producer sending 1 event per second.
+    Action – Python producer sending 1 event per second.
 
     Usage:
-        python -m chapter12.action02_producer_incoming_orders
+        python -m chapter12.action03_producer_incoming_orders
     """
     signal.signal(signal.SIGINT, _handle_sigint)
     signal.signal(signal.SIGTERM, _handle_sigint)

@@ -1,4 +1,4 @@
-# chapter12/action05_consumer_group_debug.py
+# chapter12/action06_consumer_group_debug.py
 
 from __future__ import annotations
 
@@ -51,10 +51,10 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
 
 def main(argv: Optional[list[str]] = None) -> None:
     """
-    Action 12.4 – Consumer groups & offsets (debug-style consumer).
+    Action – Consumer groups & offsets (debug-style consumer).
 
     Usage:
-        python -m chapter12.action05_consumer_group_debug --group-id pizza-debug --from-beginning
+        python -m chapter12.action06_consumer_group_debug --group-id pizza-debug --from-beginning
     """
     args = parse_args(argv)
 

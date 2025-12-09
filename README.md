@@ -24,3 +24,19 @@ Produce events to a local Kafka running on localhost:9092:
 Consume events from the incoming-orders topic:
 
     python -m chapter11.consume_orders_local_kafka
+
+
+
+# Chapter 11
+## CLI: Install + Run Kafka in KRaft (Ubuntu 24.04, single node)
+
+# --- System prep ---
+sudo apt update
+sudo apt upgrade -y
+
+# Basic tools
+sudo apt install -y wget curl tar unzip
+
+# Java (OpenJDK 21 is fine for Kafka 3.7)
+sudo apt install -y openjdk-21-jdk
+java --version

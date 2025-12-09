@@ -1,4 +1,4 @@
-# chapter12/action03_consumer_realtime_log.py
+# chapter12/action04_consumer_realtime_log.py
 
 from __future__ import annotations
 
@@ -26,10 +26,10 @@ def _handle_sigint(signum, frame) -> None:  # type: ignore[override]
 
 def main() -> None:
     """
-    Action 12.2 – Python consumer with realtime logs.
+    Action – Python consumer with realtime logs.
 
     Usage:
-        python -m chapter12.action03_consumer_realtime_log
+        python -m chapter12.action04_consumer_realtime_log
     """
     signal.signal(signal.SIGINT, _handle_sigint)
     signal.signal(signal.SIGTERM, _handle_sigint)

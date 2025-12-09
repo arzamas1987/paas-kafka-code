@@ -41,10 +41,10 @@ def main() -> None:
           - baking:       order-prepared     → order-baked
           - ready:        order-baked        → order-ready-for-pickup
 
-    This script is a convenience orchestrator for Chapter 12.
-    The same lifecycle helpers are reused by the standalone services under
-    pizza_app.services.* so the architecture can be reused in Docker- and
-    Confluent-based chapters.
+    This script is a convenience orchestrator for the book. The same
+    lifecycle functions are reused by the standalone services under
+    pizza_app.services.* so the architecture can be reused in Docker
+    and Confluent-based chapters.
     """
     stop_event = threading.Event()
 
@@ -64,7 +64,7 @@ def main() -> None:
 
     threads: List[threading.Thread] = []
 
-    # Producer of incoming orders (separate from Chapter 10 stage_order_received.py)
+    # Producer of incoming orders
     producer_thread = threading.Thread(
         target=run_order_received_producer,
         name="Producer-OrderReceived",

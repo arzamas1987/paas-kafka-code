@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 
 def main() -> None:
     """
-    Action 12.1 – Check Python ↔ Kafka connectivity for the active profile.
+    Action – Check Python ↔ Kafka connectivity for the active profile.
 
     Usage:
         python -m chapter12.action01_check_connection
