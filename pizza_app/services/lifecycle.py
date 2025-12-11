@@ -49,37 +49,42 @@ except Exception:  # pragma: no cover - defensive
     create_random_order = None  # type: ignore[assignment]
 
 
+# --- replace the existing build_order_received() in
+# pizza_app/services/lifecycle.py with this version --------------------
+
 def build_order_received() -> Dict[str, Any]:
     """
     Build a single OrderReceived-style event as a plain dict.
 
-    Preference order:
-      1) create_random_order_received() if available.
-      2) create_random_order() if available.
-      3) simple synthetic fallback.
+    Prefer the Chapter 10 generator if it exists, otherwise fall back
+    to a simple synthetic structure.
 
-    This keeps the function robust even if the generator API changes
-    slightly between Chapter 10 / later refactors.
+    The returned dict is guaranteed to be JSON-serialisable so that it
+    can be passed directly to json.dumps(...) in the Kafka producer.
     """
-    # 1) Explicit OrderReceived model
     if create_random_order_received is not None:
         model = create_random_order_received()
+
+        # Pydantic v2: model_dump(mode="json") gives JSON-friendly types
         if hasattr(model, "model_dump"):
-            return model.model_dump()
+            try:
+                return model.model_dump(mode="json")  # type: ignore[call-arg]
+            except TypeError:
+                # Fallback without mode parameter if the signature differs
+                return model.model_dump()  # type: ignore[no-any-return]
+
+        # Pydantic v1: use .json() + json.loads() for safe types
+        if hasattr(model, "json"):
+            return json.loads(model.json())
+
+        # Last-resort: assume a dict-like API
         if hasattr(model, "dict"):
             return model.dict()  # type: ignore[no-any-return]
-        return json.loads(model.json())
 
-    # 2) Generic order model
-    if create_random_order is not None:
-        model = create_random_order()
-        if hasattr(model, "model_dump"):
-            return model.model_dump()
-        if hasattr(model, "dict"):
-            return model.dict()  # type: ignore[no-any-return]
-        return json.loads(model.json())
+        # Absolute fallback: try JSON roundtrip
+        return json.loads(str(model))
 
-    # 3) Last resort: minimal synthetic structure
+    # Fallback: simple synthetic structure – fully JSON-safe.
     ts = int(time.time())
     return {
         "order_id": f"A{ts}",
@@ -88,6 +93,7 @@ def build_order_received() -> Dict[str, Any]:
         "status": "received",
         "timestamp": ts,
     }
+
 
 
 # --------------------------------------------------------------------

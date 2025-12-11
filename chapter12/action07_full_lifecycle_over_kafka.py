@@ -34,17 +34,25 @@ def main() -> None:
     Action 7 – Full Pizza Lifecycle over Kafka.
 
     Starts:
-      * one producer that generates OrderReceived events, and
+      * one producer that generates OrderReceived events (the initiator), and
       * four stage workers:
           - validation:   incoming-orders    → order-validated
           - preparation:  order-validated    → order-prepared
           - baking:       order-prepared     → order-baked
           - ready:        order-baked        → order-ready-for-pickup
 
-    This script is a convenience orchestrator for the book. The same
-    lifecycle functions are reused by the standalone services under
-    pizza_app.services.* so the architecture can be reused in Docker
-    and Confluent-based chapters.
+    Startup order:
+      1. Start all four stage workers (consumers) first.
+      2. Wait a few seconds so consumer groups can stabilise.
+      3. Start the OrderReceived producer (initiator) last.
+
+    This reduces the noisy transient logs (NodeNotReadyError,
+    MemberIdRequiredError) that appear when consumer groups are still
+    joining while data is already flowing.
+
+    The same lifecycle functions are reused by the standalone services under
+    pizza_app.services.* so the architecture can be reused in Docker and
+    Confluent-based chapters.
     """
     stop_event = threading.Event()
 
@@ -64,14 +72,9 @@ def main() -> None:
 
     threads: List[threading.Thread] = []
 
-    # Producer of incoming orders
-    producer_thread = threading.Thread(
-        target=run_order_received_producer,
-        name="Producer-OrderReceived",
-        kwargs={"bootstrap_servers": bootstrap, "stop_event": stop_event, "interval_sec": 1.0},
-        daemon=True,
-    )
-    threads.append(producer_thread)
+    # ------------------------------------------------------------------
+    # 1) Stage workers – start all consumers first
+    # ------------------------------------------------------------------
 
     # Validation stage
     validation_thread = threading.Thread(
@@ -141,11 +144,40 @@ def main() -> None:
     )
     threads.append(ready_thread)
 
-    logger.info("Launching %d pipeline threads.", len(threads))
+    logger.info("Launching %d stage worker threads (consumers).", len(threads))
     for t in threads:
         t.start()
 
-    # Keep the main thread alive until stop_event is set
+    # ------------------------------------------------------------------
+    # 2) Give consumer groups time to stabilise
+    # ------------------------------------------------------------------
+    logger.info(
+        "Stage workers started. Waiting 5 seconds for consumer groups to stabilise "
+        "before starting the OrderReceived initiator."
+    )
+    time.sleep(5.0)
+
+    # ------------------------------------------------------------------
+    # 3) Initiator – OrderReceived producer started last
+    # ------------------------------------------------------------------
+    producer_thread = threading.Thread(
+        target=run_order_received_producer,
+        name="Producer-OrderReceived",
+        kwargs={
+            "bootstrap_servers": bootstrap,
+            "stop_event": stop_event,
+            "interval_sec": 1.0,
+        },
+        daemon=True,
+    )
+    threads.append(producer_thread)
+
+    logger.info("Starting initiator thread: %s", producer_thread.name)
+    producer_thread.start()
+
+    # ------------------------------------------------------------------
+    # Main loop – keep process alive until stop_event is set
+    # ------------------------------------------------------------------
     try:
         while not stop_event.is_set():
             time.sleep(0.5)
