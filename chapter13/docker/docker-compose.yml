@@ -1,0 +1,113 @@
+name: paas-ch13-kraft
+
+services:
+  kafka1:
+    image: ${KAFKA_IMAGE}
+    container_name: ch13-kafka1
+    hostname: kafka1
+    ports:
+      - "${KAFKA1_HOST_PORT}:19092"
+    volumes:
+      - kafka1-data:/var/lib/kafka/data
+      - ./config/kafka1.properties:/etc/kafka/kraft/server.properties:ro
+    networks:
+      - kafka-net
+    command:
+      - bash
+      - -c
+      - |
+        set -e
+        if [ ! -f /var/lib/kafka/data/meta.properties ]; then
+          echo "[kafka1] Formatting KRaft storage..."
+          kafka-storage format --ignore-formatted --cluster-id "${KAFKA_KRAFT_CLUSTER_ID}" --config /etc/kafka/kraft/server.properties
+        fi
+        echo "[kafka1] Starting broker..."
+        exec kafka-server-start /etc/kafka/kraft/server.properties
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  kafka2:
+    image: ${KAFKA_IMAGE}
+    container_name: ch13-kafka2
+    hostname: kafka2
+    ports:
+      - "${KAFKA2_HOST_PORT}:19093"
+    volumes:
+      - kafka2-data:/var/lib/kafka/data
+      - ./config/kafka2.properties:/etc/kafka/kraft/server.properties:ro
+    networks:
+      - kafka-net
+    command:
+      - bash
+      - -c
+      - |
+        set -e
+        if [ ! -f /var/lib/kafka/data/meta.properties ]; then
+          echo "[kafka2] Formatting KRaft storage..."
+          kafka-storage format --ignore-formatted --cluster-id "${KAFKA_KRAFT_CLUSTER_ID}" --config /etc/kafka/kraft/server.properties
+        fi
+        echo "[kafka2] Starting broker..."
+        exec kafka-server-start /etc/kafka/kraft/server.properties
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  kafka3:
+    image: ${KAFKA_IMAGE}
+    container_name: ch13-kafka3
+    hostname: kafka3
+    ports:
+      - "${KAFKA3_HOST_PORT}:19094"
+    volumes:
+      - kafka3-data:/var/lib/kafka/data
+      - ./config/kafka3.properties:/etc/kafka/kraft/server.properties:ro
+    networks:
+      - kafka-net
+    command:
+      - bash
+      - -c
+      - |
+        set -e
+        if [ ! -f /var/lib/kafka/data/meta.properties ]; then
+          echo "[kafka3] Formatting KRaft storage..."
+          kafka-storage format --ignore-formatted --cluster-id "${KAFKA_KRAFT_CLUSTER_ID}" --config /etc/kafka/kraft/server.properties
+        fi
+        echo "[kafka3] Starting broker..."
+        exec kafka-server-start /etc/kafka/kraft/server.properties
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  kafka-ui:
+    image: ${KAFKA_UI_IMAGE}
+    container_name: ch13-kafka-ui
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+    ports:
+      - "${KAFKA_UI_PORT}:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "chapter13-lab"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    name: paas-ch13-kafka-net
+
+volumes:
+  kafka1-data:
+  kafka2-data:
+  kafka3-data:
