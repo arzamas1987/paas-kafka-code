@@ -35,7 +35,8 @@ def get_kafka_settings() -> KafkaSettings:
         return KafkaSettings(profile=profile, bootstrap_servers=bootstrap)
 
     if profile == "docker":
-        bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
+        bootstrap = _load_env("KAFKA_BOOTSTRAP_SERVERS", "localhost:19092")
+
         return KafkaSettings(profile=profile, bootstrap_servers=bootstrap)
 
     if profile == "cloud":
