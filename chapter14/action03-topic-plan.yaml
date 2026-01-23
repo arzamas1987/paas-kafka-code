@@ -1,0 +1,6 @@
+version: 1
+
+topics:
+  - name: hello-pizza
+    partitions: 3
+    config: {}
