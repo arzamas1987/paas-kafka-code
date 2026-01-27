@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any, List
+from typing import List
 
 import yaml
 
@@ -29,7 +29,7 @@ def _load_topic_names(path: Path) -> List[str]:
 
 def main(argv: List[str]) -> int:
     if len(argv) != 2:
-        print("Usage: python -m chapter14.topic_plan_destroy chapter14/action05-topic-plan.yaml")
+        print("Usage: python -m chapter14.topic_plan_destroy <plan.yaml>")
         return 2
 
     plan_path = Path(argv[1])

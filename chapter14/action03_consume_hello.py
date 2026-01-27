@@ -1,37 +1,42 @@
 from __future__ import annotations
 
 import json
+import os
 
-from chapter14.action02_03_cloud_config import CloudKafkaSettings, build_consumer
+from chapter14.ch14_cloud_config import CloudKafkaSettings, build_consumer
 
 TOPIC = "hello-pizza"
 
 
 def main() -> int:
     settings = CloudKafkaSettings.from_env()
-    consumer = build_consumer(settings, client_id="ch14-action03-consumer", topics=[TOPIC])
 
-    print("[INFO] Listening on topic 'hello-pizza'. Press CTRL+C to stop.")
+    group_id = os.getenv("PIZZA_CLOUD_CONSUMER_GROUP", "ch14-action03-hello-cloud-demo").strip()
+    consumer = build_consumer(settings, group_id=group_id, auto_offset_reset="earliest")
+    consumer.subscribe([TOPIC])
+
+    print(f"[INFO] Listening on topic='{TOPIC}' group='{group_id}'. Stop with Ctrl+C.")
     try:
         while True:
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
             if msg.error():
-                print(f"[ERROR] Consumer error: {msg.error()}")
+                print(f"[WARN] consumer_error={msg.error()}")
                 continue
 
-            key = msg.key().decode("utf-8") if msg.key() else None
-            value_raw = msg.value().decode("utf-8") if msg.value() else ""
-            try:
-                value = json.loads(value_raw)
-            except Exception:
-                value = value_raw
+            key = (msg.key() or b"").decode("utf-8", errors="replace")
+            raw = (msg.value() or b"").decode("utf-8", errors="replace")
 
-            print(f"[OK] topic={msg.topic()} partition={msg.partition()} offset={msg.offset()} key={key}")
-            print(value)
+            try:
+                payload = json.loads(raw)
+            except Exception:
+                payload = raw
+
+            print(f"[OK] topic={msg.topic()} partition={msg.partition()} offset={msg.offset()} key='{key}'")
+            print(payload)
     except KeyboardInterrupt:
-        print("\n[INFO] Stopped by user.")
+        print("[OK] Stopped by user.")
     finally:
         consumer.close()
 

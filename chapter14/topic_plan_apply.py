@@ -24,7 +24,7 @@ def _load_plan(path: Path) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
 
 def main(argv: List[str]) -> int:
     if len(argv) != 2:
-        print("Usage: python -m chapter14.topic_plan_apply chapter14/action05-topic-plan.yaml")
+        print("Usage: python -m chapter14.topic_plan_apply <plan.yaml>")
         return 2
 
     plan_path = Path(argv[1])
@@ -62,7 +62,6 @@ def main(argv: List[str]) -> int:
         for topic_name, fut in futures.items():
             try:
                 fut.result()
-                # Find requested partitions for reporting (best-effort)
                 requested = next((nt.num_partitions for nt in to_create if nt.topic == topic_name), None)
                 if requested is None:
                     print(f"[OK] Created topic='{topic_name}'")
