@@ -1,5 +1,5 @@
 # chapter14/destroy_topic_plan.py
-# Generic: delete topics listed in a plan file (used by Action 03 and later actions).
+# Generic topic-plan destroy: deletes the topics listed in a plan file.
 # Safety latch: requires --yes or PIZZA_CONFIRM_DELETE="YES".
 
 from __future__ import annotations

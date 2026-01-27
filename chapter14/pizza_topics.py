@@ -1,0 +1,5 @@
+INCOMING_ORDERS = "incoming-orders"
+ORDER_VALIDATED = "order-validated"
+ORDER_PREPARED = "order-prepared"
+ORDER_BAKED = "order-baked"
+ORDER_READY_FOR_PICKUP = "order-ready-for-pickup"

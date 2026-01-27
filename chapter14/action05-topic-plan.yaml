@@ -1,0 +1,22 @@
+version: 1
+
+defaults:
+  partitions: 3
+  replication_factor: 3
+  config:
+    cleanup.policy: "delete"
+
+topics:
+  - name: "incoming-orders"
+  - name: "order-validated"
+  - name: "order-prepared"
+  - name: "order-baked"
+  - name: "order-ready-for-pickup"
+
+
+
+
+
+
+
+
