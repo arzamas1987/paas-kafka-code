@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, Optional
 
 from confluent_kafka import KafkaError, Message
 
-from chapter14.ch14_cloud_config import CloudKafkaSettings, build_consumer, build_producer
+from chapter14.confluent.cloud_config import CloudKafkaSettings, build_consumer, build_producer
 
 TransformFn = Callable[[Dict[str, Any]], Dict[str, Any]]
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from chapter14.cloud_stage_worker import StageSpec, run_stage
+from chapter14.confluent.cloud_stage_worker import StageSpec, run_stage
 from pizza_app.services import lifecycle
 
 

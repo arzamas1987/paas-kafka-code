@@ -6,7 +6,7 @@ import random
 import time
 from typing import Any, Dict
 
-from chapter14.ch14_cloud_config import CloudKafkaSettings, build_producer
+from chapter14.confluent.cloud_config import CloudKafkaSettings, build_producer
 
 from pizza_app.generator.order_factory import create_random_order
 

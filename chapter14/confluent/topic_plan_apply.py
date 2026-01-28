@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Tuple
 import yaml
 from confluent_kafka.admin import NewTopic, ConfigResource, RESOURCE_TOPIC
 
-from chapter14.ch14_cloud_config import CloudKafkaSettings, build_admin
+from chapter14.confluent.cloud_config import CloudKafkaSettings, build_admin
 
 
 def _load_plan(path: Path) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:

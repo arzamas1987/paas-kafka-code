@@ -6,7 +6,7 @@ from typing import List
 
 import yaml
 
-from chapter14.ch14_cloud_config import CloudKafkaSettings, build_admin
+from chapter14.confluent.cloud_config import CloudKafkaSettings, build_admin
 
 
 def _load_topic_names(path: Path) -> List[str]:

@@ -11,3 +11,5 @@ var/
 .mypy_cache/
 .idea/
 .vscode/
+
+chapter14/action02_cloud.env

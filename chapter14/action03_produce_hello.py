@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import time
 
-from chapter14.ch14_cloud_config import CloudKafkaSettings, build_producer
+from chapter14.confluent.cloud_config import CloudKafkaSettings, build_producer
 
 TOPIC = "hello-pizza"
 
