@@ -1,0 +1,33 @@
+version: 1
+bootstrap_env: KAFKA_BOOTSTRAP_SERVERS
+
+topics:
+  - name: incoming-orders
+    partitions: 3
+    replication_factor: 3
+    config:
+      min.insync.replicas: "2"
+
+  - name: order-validated
+    partitions: 3
+    replication_factor: 3
+    config:
+      min.insync.replicas: "2"
+
+  - name: order-prepared
+    partitions: 3
+    replication_factor: 3
+    config:
+      min.insync.replicas: "2"
+
+  - name: order-baked
+    partitions: 3
+    replication_factor: 3
+    config:
+      min.insync.replicas: "2"
+
+  - name: order-ready-for-pickup
+    partitions: 3
+    replication_factor: 3
+    config:
+      min.insync.replicas: "2"
